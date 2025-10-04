@@ -11,15 +11,14 @@ st.set_page_config(page_title="Heart Attack Prediction App ❤️",
 st.title("🩺 Heart Attack Risk Prediction")
 st.markdown("This app predicts the likelihood of a **heart attack** based on your health and lifestyle information.")
 
-# Load Model + Preprocessor
-model = joblib.load("mlp_diabetes_model.pkl")
-preprocessor = joblib.load("preprocessor.pkl")  # لازم تكون حافظه وانت بتدرب
+# Load pipeline (Model + Preprocessor inside)
+pipeline = joblib.load("mlp_model.pkl")
 
 # Sidebar info
 st.sidebar.header("ℹ️ About")
 st.sidebar.write("""
 - Built with **Streamlit**  
-- Model: **MLP Neural Network**  
+- Model: **MLP Neural Network** (inside pipeline)  
 - Data: CDC Heart Disease Indicators  
 """)
 
@@ -63,22 +62,22 @@ st.subheader("🏥 Medical History")
 col4, col5, col6 = st.columns(3)
 
 with col4:
-    heartAttack = st.selectbox("Had Heart Attack", ["Yes", "No"])
     angina = st.selectbox("Had Angina", ["Yes", "No"])
     stroke = st.selectbox("Had Stroke", ["Yes", "No"])
     asthma = st.selectbox("Had Asthma", ["Yes", "No"])
+    skinCancer = st.selectbox("Had Skin Cancer", ["Yes", "No"])
 
 with col5:
-    skinCancer = st.selectbox("Had Skin Cancer", ["Yes", "No"])
     copd = st.selectbox("Had COPD", ["Yes", "No"])
     depression = st.selectbox("Depression Disorder", ["Yes", "No"])
     kidneyDisease = st.selectbox("Kidney Disease", ["Yes", "No"])
+    arthritis = st.selectbox("Had Arthritis", ["Yes", "No"])
 
 with col6:
-    arthritis = st.selectbox("Had Arthritis", ["Yes", "No"])
     diabetes = st.selectbox("Diabetes", ["Yes", "No"])
     hearingDifficulty = st.selectbox("Hearing Difficulty", ["Yes", "No"])
     visionDifficulty = st.selectbox("Vision Difficulty", ["Yes", "No"])
+    removedTeeth = st.selectbox("Removed Teeth", ["All", "Some", "None", "Unknown"])
 
 # Disabilities
 st.subheader("♿ Disabilities & Daily Life")
@@ -92,7 +91,6 @@ with col7:
 
 with col8:
     difficultyErrands = st.selectbox("Difficulty Running Errands", ["Yes", "No"])
-    removedTeeth = st.selectbox("Removed Teeth", ["All", "Some", "None", "Unknown"])
 
 # Numeric Features
 st.subheader("📊 Health Measurements")
@@ -118,8 +116,8 @@ if st.button("🔮 Predict"):
         'State': state, 'Sex': sex, 'generalHealth': generalHealth,
         'physicalHealthDays': physicalHealthDays, 'mentalHealthDays': mentalHealthDays,
         'lastCheckupTime': lastCheckupTime, 'physicalActivities': physicalActivities,
-        'sleepHours': sleepHours, 'removedTeeth': removedTeeth, 'heartAttack': heartAttack,
-        'angina': angina, 'stroke': stroke, 'asthma': asthma, 'skinCancer': skinCancer,
+        'sleepHours': sleepHours, 'removedTeeth': removedTeeth, 'angina': angina,
+        'stroke': stroke, 'asthma': asthma, 'skinCancer': skinCancer,
         'copd': copd, 'depression': depression, 'kidneyDisease': kidneyDisease,
         'arthritis': arthritis, 'diabetes': diabetes, 'hearingDifficulty': hearingDifficulty,
         'visionDifficulty': visionDifficulty, 'difficultyConcentrating': difficultyConcentrating,
@@ -134,15 +132,11 @@ if st.button("🔮 Predict"):
 
     input_df = pd.DataFrame([input_dict])
 
-    # Apply same preprocessing as training
-    input_processed = preprocessor.transform(input_df)
-
-    # Predict
-    prediction = model.predict(input_processed)
-    prob = model.predict_proba(input_processed)[0][1]
+    # Predict directly with pipeline
+    prediction = pipeline.predict(input_df)
+    prob = pipeline.predict_proba(input_df)[0][1]
 
     if prediction[0] == 1:
         st.error(f"⚠️ High Risk of Heart Attack (Probability: {prob:.2%})")
     else:
         st.success(f"✅ Low Risk of Heart Attack (Probability: {prob:.2%})")
-
