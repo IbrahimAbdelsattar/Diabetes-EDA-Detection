@@ -1,66 +1,99 @@
-# Diabetes Prediction Project
+# 🫀 Heart Attack Risk Prediction
 
-This repository contains a machine learning model to predict diabetes based on various features from a dataset. The goal is to predict whether a patient has diabetes or not using a variety of health-related factors.
+> Predicting individual risk of heart attack using CDC BRFSS health indicators and a trained MLP model.  
+> This repository contains the data processing, model training, evaluation, and a Streamlit app for easy deployment.
 
-## Dataset Features
+---
 
-Below is a detailed description of each feature in the dataset:
+## 🚀 Project Overview
 
-### 🧓 1. Age
-- **Description:** Age of the patient in years, ranging from 0.08 to 80.
-- **Significance:** Risk of diabetes increases with age, particularly for Type 2 diabetes. The mean age is approximately 41.79 years.
+Cardiovascular disease (including heart attacks) is one of the leading causes of death worldwide. Early identification of individuals at high risk enables targeted prevention, timely care, and better allocation of healthcare resources.
 
-### 🚻 2. Gender
-- **Description:** Biological sex of the individual — Male, Female, or Other.
-- **Significance:** Gender can influence diabetes susceptibility due to differences in hormones, body composition, and lifestyle factors. The dataset includes Male: 39,537 and Female: 55,262.
+This project uses behavioral and health indicators from the BRFSS survey to build a machine learning model that predicts whether an individual has experienced a heart attack (`heartAttack`). 
+Kaggle Dataset (https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease/versions/6)
+The final deliverable is a trained **MLP (Multi-Layer Perceptron) model** and a polished **Streamlit web app** that accepts user inputs and returns an individualized risk prediction with probability.
 
-### ⚖️ 3. Body Mass Index (BMI)
-- **Description:** A measure of body fat based on height and weight, with values in the dataset ranging from 10.16 to 71.55.
-- **Categories:**
-  - Underweight: < 18.5
-  - Normal weight: 18.5 – 24.9
-  - Overweight: 25 – 29.9
-  - Obese: ≥ 30
-- **Significance:** A higher BMI increases the likelihood of developing Type 2 diabetes. The most common value in the dataset is 27.32 (Overweight).
+---
 
-### ❤️ 4. Hypertension
-- **Description:** Indicates if a patient has high blood pressure — 0 = No, 1 = Yes.
-- **Distribution:** 
-  - 0: 87,482
-  - 1: 7,317
-- **Significance:** Hypertension often coexists with diabetes and is linked to insulin resistance.
+## ✅ Why This Project Matters
 
-### 💔 5. Heart Disease
-- **Description:** Indicates if the patient has any form of heart disease — 0 = No, 1 = Yes.
-- **Distribution:** 
-  - 0: 90,907
-  - 1: 3,892
-- **Significance:** Heart disease is both a complication and a risk factor for diabetes.
+- **Public health impact** → Helps identify high-risk individuals for early intervention.  
+- **Actionable insights** → Detects important risk factors (BMI, smoking, chronic conditions, activity).  
+- **Accessible deployment** → Streamlit app allows non-technical users (clinicians, public health workers, individuals) to obtain quick risk estimates.  
+- **Reproducible pipeline** → End-to-end workflow from preprocessing → modeling → evaluation → deployment.  
 
-### 🚬 6. Smoking History
-- **Description:** Smoking status of the patient.
-- **Categories & Counts:**
-  - Never: 34,011
-  - No Info: 32,242
-  - Former: 9,176
-  - Current: 9,109
-  - Not Current: 6,299
-  - Ever: 3,962
-- **Significance:** Smoking is known to contribute to insulin resistance and other metabolic issues that increase diabetes risk.
+---
 
-### 🧪 7. HbA1c Level
-- **Description:** Reflects the average blood sugar level over the past 2–3 months.
-- **Significance:** An HbA1c level of 6.5% or more typically indicates diabetes. Values in the dataset range from 3.5 to 9.0, with common values being 6.6, 5.7, 6.5, and 6.0.
+## 📁 Repository Structure
+├─ data/ # raw and processed data (not committed for privacy)
+├─ notebooks/ # EDA and experiments
+├─ src/
+│ ├─ data_preprocessing.py # preprocessing, encoders, scalers
+│ ├─ train.py # training pipeline (train/val/test, SMOTE, fit models)
+│ ├─ evaluate.py # evaluation utilities, plots
+│ └─ utils.py # helper functions
+├─ models/
+│ ├─ mlp_model.pkl # trained MLP model (joblib)
+│ ├─ preprocessor.pkl # preprocessing pipeline
+│ └─ model_features.pkl # ordered feature names
+├─ app/
+│ └─ streamlit_app.py # Streamlit UI for deployment
+├─ requirements.txt
+└─ README.md
 
-### 💉 8. Blood Glucose Level
-- **Description:** The current level of glucose in the blood.
-- **Significance:** A crucial diagnostic marker — normal fasting blood glucose is generally between 70–130 mg/dL. Values above 250 are considered very high and potentially dangerous. The dataset contains values from 80 to 300, with common values like 159, 130, 126, and 140.
+---
 
-### 🎯 9. Diabetes
-- **Description:** Target variable — 0 = No Diabetes, 1 = Has Diabetes.
-- **Significance:** This is the outcome we're trying to predict based on the above features using machine learning models.
+---
 
-## Objective
-The goal of this project is to create a machine learning model that can predict whether a person has diabetes based on the features provided in the dataset. The dataset includes information about various health metrics and demographic factors that may influence the likelihood of developing diabetes. 
+Do you want me to also **generate a shorter version** (like a summary style README) for people who just want to quickly understand and run the app, or you prefer to keep this full detailed one?
 
-By training machine learning algorithms on this dataset, we aim to predict the presence of diabetes and assist healthcare professionals in identifying high-risk individuals.
+## 🧭 Data
+
+- **Source**: BRFSS (Behavioral Risk Factor Surveillance System — CDC)  
+- **Target**: `heartAttack` (Yes/No)  
+- **Features**: demographic, lifestyle, and health-related indicators  
+  (examples: `generalHealth`, `smokerStatus`, `bmi`, `diabetes`, `stroke`, `ageCategory`, etc.)
+
+⚠️ **Note**: Do not commit or share personally identifying information (PII).  
+
+---
+
+## 🛠️ Methodology
+
+1. **Exploratory Data Analysis (EDA)**  
+   - Explore distributions, missing values, and class imbalance  
+   - Visualize risk factors (BMI vs heartAttack, ageCategory, etc.)  
+
+2. **Preprocessing**  
+   - Handle missing values (`Unknown` categories / median imputation)  
+   - Normalize numerical features (`StandardScaler`)  
+   - Encode categorical features (Label/Ordinal/OneHot)  
+   - Save preprocessing pipeline (`preprocessor.pkl`)  
+
+3. **Train / Validation / Test Split**  
+   - Stratified split (60% train, 20% validation, 20% test)  
+   - Apply **SMOTE** on training set only to handle imbalance  
+
+4. **Modeling**  
+   - Baseline: Logistic Regression, Random Forest  
+   - Final: **MLP Classifier (neural network)** with early stopping  
+
+5. **Evaluation**  
+   - Metrics: Accuracy, Precision, Recall, F1, Confusion Matrix, ROC-AUC  
+   - SHAP analysis for feature importance  
+
+6. **Model Persistence**  
+   - Save trained model (`mlp_model.pkl`) and pipeline (`preprocessor.pkl`)  
+
+7. **Deployment**  
+   - **Streamlit app** accepts user inputs and returns prediction + probability  
+   - Can be deployed to **Streamlit Cloud, Heroku, AWS, or Docker**  
+
+---
+
+## 🧪 Quick Start
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/<your-username>/<repo-name>.git
+cd <repo-name>
