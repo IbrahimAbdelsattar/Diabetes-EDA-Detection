@@ -12,7 +12,7 @@ st.title("🩺 Heart Attack Risk Prediction")
 st.markdown("This app predicts the likelihood of a **heart attack** based on your health and lifestyle information.")
 
 # Load Model + Preprocessor
-model = joblib.load("mlp_model.pkl")
+model = joblib.load("mlp_diabetes_model.pkl")
 preprocessor = joblib.load("preprocessor.pkl")  # لازم تكون حافظه وانت بتدرب
 
 # Sidebar info
@@ -145,3 +145,4 @@ if st.button("🔮 Predict"):
         st.error(f"⚠️ High Risk of Heart Attack (Probability: {prob:.2%})")
     else:
         st.success(f"✅ Low Risk of Heart Attack (Probability: {prob:.2%})")
+
